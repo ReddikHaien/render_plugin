@@ -12,7 +12,7 @@ function update(){
             isRunning = false;
         }
     });
-    deno_gl.clear(0x00004000);
+    deno_gl.clear(deno_gl.GlEnums.COLOR_BUFFER_BIT);
     deno_gl.swapBuffers();
 
 
