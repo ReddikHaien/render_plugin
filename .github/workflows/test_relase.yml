@@ -1,0 +1,13 @@
+name: release
+
+on:
+  push:
+    workflow_dispatch:
+runs-on: windows-latest
+
+jobs:
+  build:
+    - name: clean
+      run: cargo clean
+    - name: build
+      run: cargo build
