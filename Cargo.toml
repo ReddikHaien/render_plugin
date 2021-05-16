@@ -10,5 +10,6 @@ crate-type = ["cdylib"]
 [dependencies]
 deno_core = "0.87.0"
 serde = "1.0.117"
-glfw = "0.41.0"
+winit = "0.25.0"
 gl = "0.14.0"
+raw-gl-context = "0.1.2"

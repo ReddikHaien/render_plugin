@@ -7,11 +7,10 @@ use deno_core::OpFn;
 use serde::Deserialize;
 use serde::Serialize;
 use std::sync::mpsc::Receiver;
-use glfw::Context;
+use winit::platform::run_return::EventLoopExtRunReturn;
 
 pub fn init(ops: &mut Vec<(&'static str, Box<OpFn>)>){
     ops.push(("op_initialize_window",op_sync(initalize_window)));
-    ops.push(("op_should_close",op_sync(should_close)));
     ops.push(("op_poll_events",op_sync(poll_events)));
     ops.push(("op_swap_buffers",op_sync(swap_buffers)));
 }
@@ -26,6 +25,7 @@ struct InitializeWindowArgs{
 #[derive(Deserialize, Serialize)]
 enum WindowEvent{
     Key{key: u32,scancode: u32,action: u32,modifiers: u32},
+    Close,
 }
 
 fn initalize_window(
@@ -34,38 +34,34 @@ fn initalize_window(
     _zero_copy: Option<ZeroCopyBuf>
 )->Result<u32,AnyError>{
 
-    let instance = state.try_borrow::<glfw::Glfw>();
+    let window = state.try_borrow::<winit::window::Window>();
 
-    match instance{
+    match window{
         Some(d) => Ok(0), //already initialized
         None => {
-            let instance = glfw::init(glfw::FAIL_ON_ERRORS).expect("Failed to create glfw");
-            
-            let (mut window,mut events) = instance.create_window(
-                args.width, 
-                args.height, 
-                &args.title, 
-                glfw::WindowMode::Windowed
-            ).expect("Failed to create window");
+            let event_loop = winit::event_loop::EventLoop::new();
 
-            gl::load_with(|s|window.get_proc_address(s));
+            let window = winit::window::WindowBuilder::new()
+                .with_title(&args.title)
+                .with_inner_size(winit::dpi::LogicalSize::new(args.width,args.height))
+                .build(&event_loop)
+                .unwrap();            
 
-            state.put(instance);
+            let config = raw_gl_context::GlConfig::default();
+
+            let context = raw_gl_context::GlContext::create(&window, config).unwrap();
+
+            gl::load_with(|symbol| context.get_proc_address(symbol));
+
+            context.make_current();
+
+            state.put(event_loop);
             state.put(window);
-            state.put(events);
+            state.put(context);
 
             Ok(0)
         },
     }
-}
-
-fn should_close(
-    state: &mut OpState,
-    _: (),
-    _: (),
-) -> Result<bool,AnyError>{
-    let window = state.try_borrow::<glfw::Window>().expect("Failed to get window instance");
-    Ok(window.should_close())
 }
 
 fn poll_events(
@@ -74,28 +70,26 @@ fn poll_events(
     _: ()
 ) -> Result<Vec<WindowEvent>,AnyError>{
 
-    {
-        let glfw = state.try_borrow_mut::<glfw::Glfw>().expect("Failed to get glfw instance");
-        glfw.poll_events();
-    }
-    
-    let events = state.try_borrow::<Receiver<(f64,glfw::WindowEvent)>>().expect("Failed to get window event reciever");
     
     let mut out: Vec<WindowEvent> = Vec::new();
-
-    for (_,e) in glfw::flush_messages(events){
-        match e{
-            glfw::WindowEvent::Key(key,scancode,action,modifiers) =>{
-                out.push(WindowEvent::Key{
-                    key: 0,
-                    scancode: 0,
-                    action: 0,
-                    modifiers: 0
-                });
-            },
-            _ => ()
+    let event_loop = state.try_borrow_mut::<winit::event_loop::EventLoop<()>>().expect("Failed to get event loop");
+    event_loop.run_return(|event,_,control_flow|{
+        *control_flow = winit::event_loop::ControlFlow::Exit;
+        match event{
+            winit::event::Event::WindowEvent {window_id, event} => {
+                match event{
+                    winit::event::WindowEvent::KeyboardInput {device_id, input, is_synthetic} => {
+                        out.push(WindowEvent::Key{key:0,scancode:0,action:0,modifiers: 0});
+                    },
+                    winit::event::WindowEvent::CloseRequested => {
+                        out.push(WindowEvent::Close);
+                    }
+                    _ => (),
+                }
+            }
+            _ => (),
         }
-    }
+    });
 
     Ok(out)
 }
@@ -106,10 +100,13 @@ fn swap_buffers(
     _: ()
 ) -> Result<u32,AnyError>{
 
+    {
+        let context = state.try_borrow_mut::<raw_gl_context::GlContext>().expect("Failed to borrow glcontext");
+        context.swap_buffers();
+    }
 
-    let window = state.try_borrow_mut::<glfw::Window>().expect("Failed to get window");
-
-    window.swap_buffers();
+    let window = state.try_borrow_mut::<winit::window::Window>().expect("Failed to borrow window");
+    window.request_redraw();
 
     Ok(0)
 }

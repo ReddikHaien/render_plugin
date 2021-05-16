@@ -1,15 +1,21 @@
 const filePath = `./target/debug/${getPrefix()}deno_gl${getSuffix()}`;
 const rid = Deno.openPlugin(filePath);
 
+
 export const {
     op_initialize_window,
     op_poll_events,
-    op_should_close,
+
     op_swap_buffers,
 
     op_clear_color,
     op_clear,
-} = (Deno as any).core.ops as {[x: string]: number};
+} = (Deno as any).core.ops() as {[x: string]: number};
+
+
+console.log(op_initialize_window);
+console.log(op_clear);
+console.log(op_clear_color);
 
 function getSuffix(){
     return Deno.build.os === "windows" ?
