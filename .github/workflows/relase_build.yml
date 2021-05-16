@@ -23,7 +23,7 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
     - name: create release
-      id: create release
+      id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
