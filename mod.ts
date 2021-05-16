@@ -19,10 +19,7 @@ export function pollEvents(){
 
 export function clearColor(r: number, g: number, b: number, a: number){
     plugin.invoke(plugin.op_clear_color,{
-        r: r,
-        g: g,
-        b: b,
-        a: a
+        r: r, g: g, b: b, a: a
     });
 }
 
