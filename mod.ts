@@ -24,3 +24,12 @@ export function clear(mask: number){
         mask: mask
     });
 }
+
+export enum GlEnums{
+    COLOR_BUFFER_BIT = 0x00004000,
+    DEPTH_BUFFER_BIT = 0x00000100,
+    STENCIL_BUFFER_BIT = 0x00000400,
+    BACK = 0x0405,
+    FRONT = 0x0404,
+    FRONT_AND_BACK = 0x0408
+}
