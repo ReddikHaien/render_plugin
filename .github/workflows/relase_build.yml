@@ -32,4 +32,6 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: false
         prerelease: false
+        files: |
+          target/debug/deno_gl.dll
 
