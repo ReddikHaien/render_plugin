@@ -23,9 +23,9 @@ jobs:
       run: cargo test --verbose
     - name: create release
       uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            target/debug/deno_gl.dll
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        files: |
+          target/debug/deno_gl.dll
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
