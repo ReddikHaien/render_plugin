@@ -1,13 +1,15 @@
 name: release
 
 on:
-  push:
-    workflow_dispatch:
-runs-on: windows-latest
+  workflow_dispatch:
+  
+
 
 jobs:
   build:
-    - name: clean
-      run: cargo clean
-    - name: build
-      run: cargo build
+    runs-on: windows-latest
+    steps: 
+      - name: clean
+        run: cargo clean
+      - name: build
+        run: cargo build
