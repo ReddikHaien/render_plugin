@@ -1,10 +1,26 @@
+import { config } from "https://deno.land/x/dotenv/mod.ts";
 import { Plug } from "https://deno.land/x/plug/mod.ts";
 
-const rid = Plug.prepare({
-    name: "deno_gl",
-    url:  "https://raw.githubusercontent.com/ReddikHaien/deno_gl/main/mod.ts",
-    policy: Plug.CachePolicy.STORE
+config({export: true})
+
+let headers = new Headers();
+
+headers.append("Authorization",Deno.env.get("ACCESS_TOKEN") as string);
+
+const download = await fetch("https://github.com/ReddikHaien/deno_gl/releases/download/V1.0.0/deno_gl.dll",{
+    method: "GET",
+    headers: headers
 });
+console.log(download);
+
+const rid = await Plug.prepare({
+    name: "deno_gl",
+    url:  "https://github.com/ReddikHaien/deno_gl/releases/download/V1.0.0/",
+    policy: Plug.CachePolicy.STORE,
+    cache: "./cache",
+    log: true,
+});
+
 
 export const {
     op_initialize_window,
@@ -17,6 +33,12 @@ export const {
 } = (Deno as any).core.ops() as {[x: string]: number};
 
 
+console.log("heeeey",op_initialize_window);
+
+
 export function invoke(op: number, args?: unknown, zeroCopy?: Uint8Array): unknown{
     return (Deno as any).core.opSync(op,args,zeroCopy)
 }
+
+"https://github.com/ReddikHaien/deno_gl/releases/download/V1.0.0/deno_gl.dll"
+"https://github.com/denosaurs/pane/releases/download/0.2.0-pre.0/pane.dll"
