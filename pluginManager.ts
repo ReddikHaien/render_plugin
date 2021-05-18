@@ -36,7 +36,11 @@ export const {
     op_delete_buffer,
     op_validate_program,
     op_use_program,
-    op_link_program
+    op_link_program,
+    op_shader_source,
+    op_get_shader_source,
+    op_get_shader_parameter,
+    op_get_program_info_log,
 } = (Deno as any).core.ops() as {[x: string]: number};
 
 

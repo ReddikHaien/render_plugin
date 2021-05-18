@@ -1,5 +1,6 @@
 import * as plugin from "./pluginManager.ts";
-
+import { GlEnums } from "./enums.ts";
+import { GetShaderParameterType } from "./conditional_types.ts";
 abstract class PointerWrapper{
     readonly #id: number;
     _deleted: boolean;
@@ -139,29 +140,28 @@ export function linkProgram(program: GLProgram){
     plugin.invoke(plugin.op_link_program,program.id);
 }
 
-export enum GlEnums{
-    COLOR_BUFFER_BIT        = 0x00004000,
-    DEPTH_BUFFER_BIT        = 0x00000100,
-    STENCIL_BUFFER_BIT      = 0x00000400,
-    BACK                    = 0x0405,
-    FRONT                   = 0x0404,
-    FRONT_AND_BACK          = 0x0408,
-    
-    CW                      = 0x0900,
-    CCW                     = 0x0901,
+export function shaderSource(shader: GLShader, source: string){
+    plugin.invoke(plugin.op_shader_source,{
+        id: shader.id,
+        source: source
+    });
+}
 
-    ARRAY_BUFFER            = 0x8892,
-    ELEMENT_ARRAY_BUFFER    = 0x8893,
+export function getShaderSource(shader: GLShader): string{
+    return plugin.invoke(plugin.op_get_shader_source,shader.id) as string;
+}
 
-    STREAM_DRAW = 0x88E0,
-    STREAM_READ = 0x88E1,
-    STREAM_COPY = 0x88E2,
-    
-    STATIC_DRAW = 0x88E4,
-    STATIC_READ = 0x88E5,
-    STATIC_COPY = 0x88E6,
+export function getShaderParameter <P extends GlEnums.SHADER_TYPE | GlEnums.DELETE_STATUS | GlEnums.COMPILE_STATUS> (shader: GLShader, pname: P): GetShaderParameterType<P>{
 
-    DYNAMIC_DRAW = 0x88E8,
-    DYNAMIC_READ = 0x88E9,
-    DYNAMIC_COPY = 0x88EA,
+    const out = plugin.invoke(plugin.op_get_shader_parameter,{id: shader.id,pname: pname}) as number;
+    switch(pname){
+        case GlEnums.SHADER_TYPE: return out as GetShaderParameterType<P>;
+        case GlEnums.DELETE_STATUS: case GlEnums.COMPILE_STATUS: return (out != GlEnums.FALSE) as GetShaderParameterType<P>;
+        default: throw new Error("unsupported pname for getShaderParameter " + GlEnums[pname]);
+    }
+
+}
+
+export function getProgramInfoLog(program: GLProgram): string{
+    return plugin.invoke(plugin.op_get_program_info_log,program.id) as string;
 }
