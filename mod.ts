@@ -135,6 +135,10 @@ export function useProgram(program: GLProgram){
     plugin.invoke(plugin.op_use_program,program.id);
 }
 
+export function linkProgram(program: GLProgram){
+    plugin.invoke(plugin.op_link_program,program.id);
+}
+
 export enum GlEnums{
     COLOR_BUFFER_BIT        = 0x00004000,
     DEPTH_BUFFER_BIT        = 0x00000100,

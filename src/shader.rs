@@ -9,6 +9,7 @@ use serde::Deserialize;
 pub fn init(ops: &mut Vec<(&'static str, Box<OpFn>)>){
     ops.push(("op_validate_program",op_sync(validate_program)));
     ops.push(("op_use_program",op_sync(use_program)));
+    ops.push(("op_link_program",op_sync(link_program)));
 }
 
 
@@ -33,6 +34,19 @@ pub fn use_program(
 
     unsafe{
         gl::UseProgram(args);
+    }
+
+    Ok(())
+}
+
+pub fn link_program(
+    _state: &mut OpState,
+    args: u32,
+    _: ()
+) -> Result<(),AnyError>{
+
+    unsafe{
+        gl::LinkProgram(args);
     }
 
     Ok(())
