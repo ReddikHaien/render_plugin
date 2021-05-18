@@ -61,6 +61,42 @@ export function createBuffer(): GLBuffer{
     return new GLBuffer(plugin.invoke(plugin.op_create_buffer) as number);
 }
 
+export function bufferData(
+    target: GlEnums.ARRAY_BUFFER | GlEnums.ELEMENT_ARRAY_BUFFER, 
+    src: number | ArrayBufferView, 
+    usage: GlEnums.STATIC_DRAW | GlEnums.STATIC_READ | GlEnums.STATIC_COPY | 
+    GlEnums.STREAM_DRAW | GlEnums.STREAM_READ | GlEnums.STREAM_COPY |
+    GlEnums.DYNAMIC_DRAW | GlEnums.DYNAMIC_READ | GlEnums.DYNAMIC_COPY){
+
+        if (typeof src === "number"){
+            plugin.invoke(plugin.op_buffer_data,{target: target,size: src, usage: usage});
+        }
+        else{
+            const buf = new Uint8Array(src.buffer);
+            plugin.invoke(plugin.op_buffer_data,{target: target, size: buf.byteLength, usage: usage}, buf);
+        }
+
+}
+
+
+export function bufferSubData(target: GlEnums.ARRAY_BUFFER | GlEnums.ELEMENT_ARRAY_BUFFER, offset: number, src: ArrayBufferView, srcOffset=0, length?:number){
+
+    plugin.invoke(
+        plugin.op_buffer_sub_data,
+        {
+            target: target,
+            offset: offset,
+            src_offset: srcOffset,
+            length: length ?? src.byteLength,
+        },
+        new Uint8Array(src.buffer)
+    );
+}
+
+export function deleteBuffer(buffer: GLBuffer){
+    plugin.invoke(plugin.op_delete_buffer,buffer.id);
+}
+
 export enum GlEnums{
     COLOR_BUFFER_BIT        = 0x00004000,
     DEPTH_BUFFER_BIT        = 0x00000100,
@@ -73,5 +109,17 @@ export enum GlEnums{
     CCW                     = 0x0901,
 
     ARRAY_BUFFER            = 0x8892,
-    ELEMENT_ARRAY_BUFFER    = 0x8893
+    ELEMENT_ARRAY_BUFFER    = 0x8893,
+
+    STREAM_DRAW = 0x88E0,
+    STREAM_READ = 0x88E1,
+    STREAM_COPY = 0x88E2,
+    
+    STATIC_DRAW = 0x88E4,
+    STATIC_READ = 0x88E5,
+    STATIC_COPY = 0x88E6,
+
+    DYNAMIC_DRAW = 0x88E8,
+    DYNAMIC_READ = 0x88E9,
+    DYNAMIC_COPY = 0x88EA,
 }

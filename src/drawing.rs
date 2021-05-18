@@ -26,6 +26,8 @@ struct ClearColorArgs{
     b: f32,
     a: f32
 }
+
+
 #[derive(Deserialize)]
 struct ViewPortArgs{
     x: i32,

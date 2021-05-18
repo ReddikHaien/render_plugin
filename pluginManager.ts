@@ -1,14 +1,9 @@
 //deno-lint-ignore-file camelcase no-explicit-any no-unused-vars
 
-
 //determins wether to fetch the file from relase or to use a locally produced file
 const production = false;
 
-
 import { Plug } from "https://deno.land/x/plug/mod.ts";
-
-
-
 
 const rid = (
     production ? 
@@ -36,6 +31,9 @@ export const {
 
     op_bind_buffer,
     op_create_buffer,
+    op_buffer_data,
+    op_buffer_sub_data,
+    op_delete_buffer
 } = (Deno as any).core.ops() as {[x: string]: number};
 
 
