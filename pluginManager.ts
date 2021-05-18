@@ -1,3 +1,5 @@
+//deno-lint-ignore-file camelcase no-explicit-any no-unused-vars
+
 import { Plug } from "https://deno.land/x/plug/mod.ts";
 
 
@@ -18,15 +20,11 @@ export const {
 
     op_clear_color,
     op_clear,
+    op_cull_face,
+    op_viewport
 } = (Deno as any).core.ops() as {[x: string]: number};
-
-
-console.log("heeeey",op_initialize_window);
 
 
 export function invoke(op: number, args?: unknown, zeroCopy?: Uint8Array): unknown{
     return (Deno as any).core.opSync(op,args,zeroCopy)
 }
-
-"https://github.com/ReddikHaien/deno_gl/releases/download/V1.0.0/deno_gl.dll"
-"https://github.com/denosaurs/pane/releases/download/0.2.0-pre.0/pane.dll"

@@ -1,4 +1,5 @@
-import * as plugin from "./pluginManager.ts"
+import * as plugin from "./pluginManager.ts";
+
 export function initializeWindow(width: number, height: number, title: string){
     plugin.invoke(plugin.op_initialize_window,{width: width, height: height, title: title});
 }
@@ -11,7 +12,15 @@ export function pollEvents(){
     return plugin.invoke(plugin.op_poll_events) as any[];
 }
 
+export function cullFace(mode: GlEnums.BACK | GlEnums.FRONT | GlEnums.FRONT_AND_BACK){
+    plugin.invoke(plugin.op_cull_face,mode);
+}
 
+export function viewport(x: number, y: number, width: number, height: number){
+    plugin.invoke(plugin.op_viewport,{
+        x: x, y: y, width: width, height: height
+    });
+}
 
 export function clearColor(r: number, g: number, b: number, a: number){
     plugin.invoke(plugin.op_clear_color,{
