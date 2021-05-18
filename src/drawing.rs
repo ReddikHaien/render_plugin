@@ -12,6 +12,7 @@ pub fn init(ops: &mut Vec<(&'static str, Box<OpFn>)>){
     ops.push(("op_clear_color",op_sync(clear_color)));
     ops.push(("op_cull_face",op_sync(cull_face)));
     ops.push(("op_viewport",op_sync(viewport)));
+    ops.push(("op_front_face",op_sync(front_face)));
 }
 
 #[derive(Deserialize)]
@@ -78,6 +79,17 @@ fn viewport(
 )-> Result<(),AnyError>{
     unsafe{
         gl::Viewport(args.x,args.y,args.width,args.height);
+    }
+    Ok(())
+}
+
+fn front_face(
+    _state: &mut OpState,
+    mode: u32,
+    _: (),
+) -> Result<(),AnyError>{
+    unsafe{
+        gl::FrontFace(mode);
     }
     Ok(())
 }

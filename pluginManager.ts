@@ -21,7 +21,8 @@ export const {
     op_clear_color,
     op_clear,
     op_cull_face,
-    op_viewport
+    op_front_face,
+    op_viewport,
 } = (Deno as any).core.ops() as {[x: string]: number};
 
 
