@@ -3,9 +3,10 @@
 import { Plug } from "https://deno.land/x/plug/mod.ts";
 
 
+
 const rid = await Plug.prepare({
     name: "deno_gl",
-    url:  "https://github.com/ReddikHaien/deno_gl/releases/download/V1.0.0/",
+    url:  "https://github.com/ReddikHaien/deno_gl/releases/download/V1.0.1/",
     policy: Plug.CachePolicy.STORE,
     cache: "./cache",
     log: true,
