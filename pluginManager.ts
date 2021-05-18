@@ -1,17 +1,6 @@
 import { config } from "https://deno.land/x/dotenv/mod.ts";
 import { Plug } from "https://deno.land/x/plug/mod.ts";
 
-config({export: true})
-
-let headers = new Headers();
-
-headers.append("Authorization",Deno.env.get("ACCESS_TOKEN") as string);
-
-const download = await fetch("https://github.com/ReddikHaien/deno_gl/releases/download/V1.0.0/deno_gl.dll",{
-    method: "GET",
-    headers: headers
-});
-console.log(download);
 
 const rid = await Plug.prepare({
     name: "deno_gl",
