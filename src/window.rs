@@ -51,9 +51,11 @@ fn initalize_window(
 
             let context = raw_gl_context::GlContext::create(&window, config).unwrap();
 
+            context.make_current();
+
             gl::load_with(|symbol| context.get_proc_address(symbol));
 
-            context.make_current();
+
 
             state.put(event_loop);
             state.put(window);

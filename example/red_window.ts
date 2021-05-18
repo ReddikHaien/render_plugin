@@ -4,6 +4,7 @@ deno_gl.initializeWindow(400,400,"bacon");
 
 deno_gl.clearColor(1.0,0.0,0.0,1.0);
 
+
 let isRunning = true;
 function update(){
 
@@ -23,5 +24,6 @@ function update(){
     }
 }
 
+deno_gl.createBuffer();
 
 update();

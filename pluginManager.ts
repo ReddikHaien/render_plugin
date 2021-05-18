@@ -1,17 +1,26 @@
 //deno-lint-ignore-file camelcase no-explicit-any no-unused-vars
 
+
+//determins wether to fetch the file from relase or to use a locally produced file
+const production = false;
+
+
 import { Plug } from "https://deno.land/x/plug/mod.ts";
 
 
 
-const rid = await Plug.prepare({
-    name: "deno_gl",
-    url:  "https://github.com/ReddikHaien/deno_gl/releases/download/V1.0.1/",
-    policy: Plug.CachePolicy.STORE,
-    cache: "./cache",
-    log: true,
-});
 
+const rid = (
+    production ? 
+    await Plug.prepare({
+        name: "deno_gl",
+        url:  "https://github.com/ReddikHaien/deno_gl/releases/download/V1.0.1/",
+        policy: Plug.CachePolicy.STORE,
+        cache: "./cache",
+        log: true,
+    }) :
+        Deno.openPlugin("./target/debug/deno_gl.dll")
+);
 
 export const {
     op_initialize_window,
