@@ -1,4 +1,3 @@
-import { config } from "https://deno.land/x/dotenv/mod.ts";
 import { Plug } from "https://deno.land/x/plug/mod.ts";
 
 
