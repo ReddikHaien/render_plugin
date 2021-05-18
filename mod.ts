@@ -1,14 +1,36 @@
 import * as plugin from "./pluginManager.ts";
 
-export class GLBuffer{
-    readonly #_id: number;
+abstract class PointerWrapper{
+    readonly #id: number;
+    _deleted: boolean;
     constructor(id: number){
-        this.#_id = id;
+        this.#id = id;
+        this._deleted = false;
     }
-    get id() {
-        return this.#_id;
+    get id(){
+        return this.#id;
     }
-    
+    get deleted(){
+        return this._deleted;
+    }
+}
+
+export class GLBuffer extends PointerWrapper{
+    constructor(id: number){
+        super(id);
+    }
+}
+
+export class GLProgram extends PointerWrapper{
+    constructor(id: number){
+        super(id);
+    }
+}
+
+export class GLShader extends PointerWrapper{
+    constructor(id: number){
+        super(id);
+    }
 }
 
 
@@ -78,7 +100,6 @@ export function bufferData(
 
 }
 
-
 export function bufferSubData(target: GlEnums.ARRAY_BUFFER | GlEnums.ELEMENT_ARRAY_BUFFER, offset: number, src: ArrayBufferView, srcOffset=0, length?:number){
 
     plugin.invoke(
@@ -95,6 +116,23 @@ export function bufferSubData(target: GlEnums.ARRAY_BUFFER | GlEnums.ELEMENT_ARR
 
 export function deleteBuffer(buffer: GLBuffer){
     plugin.invoke(plugin.op_delete_buffer,buffer.id);
+    buffer._deleted = true;
+}
+
+export function validateProgram(program: GLProgram){
+    plugin.invoke(plugin.op_validate_program,program.id);
+}
+
+export function isProgram(program?: unknown): boolean{
+    return program instanceof GLProgram && !program.deleted;
+}
+
+export function isShader(shader: unknown): boolean{
+    return shader instanceof GLShader && !shader.deleted;
+}
+
+export function useProgram(program: GLProgram){
+    plugin.invoke(plugin.op_use_program,program.id);
 }
 
 export enum GlEnums{

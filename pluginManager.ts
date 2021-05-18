@@ -33,7 +33,9 @@ export const {
     op_create_buffer,
     op_buffer_data,
     op_buffer_sub_data,
-    op_delete_buffer
+    op_delete_buffer,
+    op_validate_program,
+    op_use_program,
 } = (Deno as any).core.ops() as {[x: string]: number};
 
 
