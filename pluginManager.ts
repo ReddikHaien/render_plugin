@@ -1,7 +1,7 @@
 //deno-lint-ignore-file camelcase no-explicit-any no-unused-vars
 
 //determins wether to fetch the file from relase or to use a locally produced file
-const production = false;
+const production = !Deno.args.includes("USE_LOCAL");
 
 import { Plug } from "https://deno.land/x/plug/mod.ts";
 
