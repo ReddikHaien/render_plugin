@@ -1,15 +1,12 @@
 use deno_core::Extension;
-use deno_core::OpState;
-use deno_core::ZeroCopyBuf;
-use deno_core::op_sync;
-use deno_core::error::AnyError;
 use deno_core::OpFn;
 
-use serde::Deserialize;
 
 pub mod window;
 pub mod drawing;
 pub mod buffer;
+pub mod shader;
+
 #[no_mangle]
 pub fn init() -> Extension{
     let mut ops: Vec<(&'static str, Box<OpFn>)> = Vec::new();
@@ -17,5 +14,6 @@ pub fn init() -> Extension{
     window::init(&mut ops);
     drawing::init(&mut ops);
     buffer::init(&mut ops);
+    shader::init(&mut ops);
     Extension::builder().ops(ops).build()
 }
