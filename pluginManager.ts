@@ -23,6 +23,9 @@ export const {
     op_cull_face,
     op_front_face,
     op_viewport,
+
+    op_bind_buffer,
+    op_create_buffer,
 } = (Deno as any).core.ops() as {[x: string]: number};
 
 

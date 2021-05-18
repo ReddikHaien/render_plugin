@@ -9,13 +9,13 @@ use serde::Deserialize;
 
 pub mod window;
 pub mod drawing;
-
+pub mod buffer;
 #[no_mangle]
 pub fn init() -> Extension{
     let mut ops: Vec<(&'static str, Box<OpFn>)> = Vec::new();
 
     window::init(&mut ops);
     drawing::init(&mut ops);
-    
+    buffer::init(&mut ops);
     Extension::builder().ops(ops).build()
 }

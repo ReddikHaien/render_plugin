@@ -1,4 +1,3 @@
-use deno_core::Extension;
 use deno_core::OpState;
 use deno_core::ZeroCopyBuf;
 use deno_core::op_sync;
